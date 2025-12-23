@@ -7,6 +7,7 @@ import hydra
 import mlflow
 import numpy as np
 from datasets import load_from_disk
+from download_data import download_data
 from omegaconf import DictConfig
 from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score
 from transformers import (
@@ -51,6 +52,7 @@ def train(cfg: DictConfig):
                 "eval_batch_size": cfg.training.eval_batch_size,
                 "learning_rate": cfg.training.learning_rate,
                 "num_epochs": cfg.training.num_epochs,
+                "weight_decay": cfg.training.weight_decay,
             }
         )
         mlflow.log_param("git_commit_id", commit_id)
@@ -58,6 +60,8 @@ def train(cfg: DictConfig):
         # ------------------------
         # Датасеты
         data_dir = Path(cfg.data.data_dir)
+        download_data(data_dir)
+
         train_dataset = load_from_disk(data_dir / "train_toxic_dataset_clean")
         val_dataset = load_from_disk(data_dir / "val_toxic_dataset_clean")
 

@@ -13,7 +13,7 @@ dependencies = [
 [dependency-groups]
 dev = [
     "datasets>=4.4.2",
-    "dvc[gdrive]>=3.65.0",
+    "dvc[azure,gdrive]>=3.65.0",
     "mlflow>=3.8.0",
     "pre-commit>=4.5.1",
 ]

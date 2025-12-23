@@ -1,5 +1,6 @@
 defaults:
   - data: data
+  - logging: logging
   - model: model
   - training: training
-  - logging: logging
+  - _self_
