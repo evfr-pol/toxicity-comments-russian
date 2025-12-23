@@ -1,0 +1,18 @@
+[project]
+name = "toxicity-comments-russian"
+version = "0.1.0"
+description = "Here we train and infer model for prediction the toxicity of comments in russian language."
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "transformers>=4.57.3",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.5.1",
+]
+
+[tool.ruff]
+line-length = 100
+lint.select = ["E", "F", "W", "I", "B", "SIM", "A", "RET", "PTH"]
