@@ -34,8 +34,7 @@ class ToxicONNXModel(mlflow.pyfunc.PythonModel):
         logits = outputs[0]
         return logits[:, 1]
 
-
-if __name__ == "__main__":
+def main():
     model_path = Path(__file__).resolve().parent / "../rubert_tiny2_toxic/best_model"
     with mlflow.start_run() as run:
         mlflow.pyfunc.log_model(
@@ -47,3 +46,7 @@ if __name__ == "__main__":
         run_id = run.info.run_id
         model_uri = f"runs:/{run_id}/toxic_russian_comments_onnx"
         mlflow.register_model(model_uri, "toxic_russian_comments_onnx")
+
+
+if __name__ == "__main__":
+    main()

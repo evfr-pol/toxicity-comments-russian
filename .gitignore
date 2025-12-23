@@ -218,6 +218,7 @@ __marimo__/
 /data_remote
 /outputs
 /rubert_tiny2_toxic
+/plots
 
 *.onnx
 

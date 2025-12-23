@@ -28,10 +28,10 @@ def compute_metrics(pred):
     }
 
 
-def pull_data_dvc():
-    repo = Repo(str(Path(__file__).parent))
-    repo.pull(force=True)
-    repo.close()
+# def pull_data_dvc():
+#     repo = Repo(str(Path(__file__).parent))
+#     repo.pull(force=True)
+#     repo.close()
 
 
 def get_git_commit_id():
@@ -44,7 +44,7 @@ def train(cfg: DictConfig):
     mlflow.set_experiment(cfg.logging.experiment_name)
     commit_id = get_git_commit_id()
 
-    pull_data_dvc()
+    # pull_data_dvc()
 
     with mlflow.start_run():
         mlflow.log_params(

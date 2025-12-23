@@ -47,20 +47,18 @@
 - Создаййте новое виртуальное окружение при помощи uv и установите зависимости.
 
 ```
-uv create toxicity
-uv activate toxicity
-uv install
+uv sync
 ```
 
 ## Train
+- Активируйте окружение
 
 - Скачайте данные с HF, запустите MLFlow и начните обучение
 
 ```
-python3 toxicity-comments-russian/download_data.py
-dvc pull
+python3 toxicity_comments_russian/download_data.py
 ./start_mlflow_server.sh
-python3 toxicity-comments-russian/train.py
+python3 toxicity_comments_russian/train.py
 ```
 
 ## Model production packaging
@@ -68,14 +66,14 @@ python3 toxicity-comments-russian/train.py
 - Если не было этапа Train, то необходимо загрузить модел с HF.
 
 ```
-python3 toxicity-comments-russian/mlflow_server.py
+python3 toxicity_comments_russian/download_model.py.py
 ```
 
 - Для того, чтобы перевести модель в ONNX формат и зарегестрировать в MLFlow
 
 ```
-python3 toxicity-comments-russian/model_to_onnx.py
-python3 toxicity-comments-russian/mlflow_server.py
+python3 toxicity_comments_russian/model_to_onnx.py
+python3 toxicity_comments_russian/mlflow_server.py
 ```
 
 ## Infer
@@ -86,6 +84,6 @@ python3 toxicity-comments-russian/mlflow_server.py
 mlflow models serve -m "models:/toxic_russian_comments_onnx/<version>" -p 5000 --no-conda
 ```
 
-<version> - смотри в выводе команды mlflow_server.py
+`<version>` - смотри в выводе команды mlflow_server.py
 
 Для примера смотри examples.py
