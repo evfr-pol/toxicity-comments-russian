@@ -13,21 +13,31 @@ def to_onnx(cfg: DictConfig):
     model.eval()
 
     tokenizer = AutoTokenizer.from_pretrained(model_save_path)
-    text = "Пример текста"
-    inputs = tokenizer(text, return_tensors="pt")
+    texts = ["Пример текста", "Ещё пример"]
+    inputs = tokenizer(
+        texts,
+        padding=True,
+        truncation=True,
+        return_tensors="pt",
+    )
 
     torch.onnx.export(
         model,
-        (inputs["input_ids"], inputs["attention_mask"]),
-        model_save_path / f"{cfg.model.save_onnx_name}.onnx",
-        input_names=["input_ids", "attention_mask"],
+        (
+            inputs["input_ids"],
+            inputs["attention_mask"],
+        ),
+        model_save_path / "model.onnx",
+        input_names=[
+            "input_ids",
+            "attention_mask",
+        ],
         output_names=["logits"],
         dynamic_axes={
-            "input_ids": {0: "batch_size", 1: "sequence"},
-            "attention_mask": {0: "batch_size", 1: "sequence"},
-            "logits": {0: "batch_size"},
+            "input_ids": {0: "batch", 1: "sequence"},
+            "attention_mask": {0: "batch", 1: "sequence"},
+            "logits": {0: "batch"},
         },
-        external_data=False,
     )
 
 

@@ -108,10 +108,10 @@ def train(cfg: DictConfig):
         )
 
         trainer.train()
+
         model_save_path = Path(cfg.training.output_dir) / "best_model"
         trainer.save_model(model_save_path)
         trainer.tokenizer.save_pretrained(model_save_path)
-        print(f"Модель сохранена в {model_save_path}")
 
 
 if __name__ == "__main__":

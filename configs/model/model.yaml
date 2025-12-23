@@ -1,4 +1,4 @@
 pretrained_model_name: "cointegrated/rubert-tiny2"
 num_labels: 2
 freeze_backbone: true
-save_onnx_name: rubert_tiny2_toxic
+model_name: rubert_tiny2_toxic
