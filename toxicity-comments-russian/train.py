@@ -1,5 +1,3 @@
-# train.py
-
 import subprocess
 from pathlib import Path
 
@@ -7,7 +5,7 @@ import hydra
 import mlflow
 import numpy as np
 from datasets import load_from_disk
-from download_data import download_data
+from dvc.repo import Repo
 from omegaconf import DictConfig
 from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score
 from transformers import (
@@ -21,7 +19,7 @@ from transformers import (
 def compute_metrics(pred):
     labels = pred.label_ids
     preds = np.argmax(pred.predictions, axis=1)
-    probs = pred.predictions[:, 1]  # вероятность токсичного класса
+    probs = pred.predictions[:, 1]
     return {
         "f1": f1_score(labels, preds),
         "precision": precision_score(labels, preds),
@@ -30,17 +28,23 @@ def compute_metrics(pred):
     }
 
 
+def pull_data_dvc():
+    repo = Repo(str(Path(__file__).parent))
+    repo.pull(force=True)
+    repo.close()
+
+
 def get_git_commit_id():
     return subprocess.check_output(["git", "rev-parse", "HEAD"]).decode("ascii").strip()
 
 
-@hydra.main(version_base=None, config_path="conf", config_name="config")
+@hydra.main(version_base=None, config_path="../configs", config_name="config")
 def train(cfg: DictConfig):
-    # ------------------------
-    # Подготовка MLflow
     mlflow.set_tracking_uri(cfg.logging.mlflow_uri)
     mlflow.set_experiment(cfg.logging.experiment_name)
     commit_id = get_git_commit_id()
+
+    pull_data_dvc()
 
     with mlflow.start_run():
         mlflow.log_params(
@@ -57,15 +61,9 @@ def train(cfg: DictConfig):
         )
         mlflow.log_param("git_commit_id", commit_id)
 
-        # ------------------------
-        # Датасеты
         data_dir = Path(cfg.data.data_dir)
-        download_data(data_dir)
-
         train_dataset = load_from_disk(data_dir / "train_toxic_dataset_clean")
         val_dataset = load_from_disk(data_dir / "val_toxic_dataset_clean")
-
-        # Токенизация
         tokenizer = AutoTokenizer.from_pretrained(cfg.model.pretrained_model_name)
 
         def preprocess(batch):
@@ -75,23 +73,12 @@ def train(cfg: DictConfig):
 
         train_dataset = train_dataset.map(preprocess, batched=True)
         val_dataset = val_dataset.map(preprocess, batched=True)
-
         train_dataset.set_format(type="torch", columns=["input_ids", "attention_mask", "label"])
         val_dataset.set_format(type="torch", columns=["input_ids", "attention_mask", "label"])
 
-        # ------------------------
-        # Модель
         model = AutoModelForSequenceClassification.from_pretrained(
             cfg.model.pretrained_model_name, num_labels=cfg.model.num_labels
         )
-
-        if cfg.model.freeze_backbone:
-            for name, param in model.named_parameters():
-                if "classifier" not in name:
-                    param.requires_grad = False
-
-        # ------------------------
-        # TrainingArguments
         training_args = TrainingArguments(
             output_dir=Path(cfg.training.output_dir),
             per_device_train_batch_size=cfg.training.train_batch_size,
@@ -109,11 +96,8 @@ def train(cfg: DictConfig):
             greater_is_better=True,
             dataloader_num_workers=cfg.training.num_workers,
             eval_on_start=True,
-            report_to=["mlflow"],  # логируем в MLflow
+            report_to=["mlflow"],
         )
-
-        # ------------------------
-        # Trainer
         trainer = Trainer(
             model=model,
             args=training_args,
@@ -125,8 +109,8 @@ def train(cfg: DictConfig):
 
         trainer.train()
         model_save_path = Path(cfg.training.output_dir) / "best_model"
-        model.save_pretrained(model_save_path)
-        tokenizer.save_pretrained(model_save_path)
+        trainer.save_model(model_save_path)
+        trainer.tokenizer.save_pretrained(model_save_path)
         print(f"Модель сохранена в {model_save_path}")
 
 

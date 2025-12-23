@@ -7,7 +7,7 @@ from omegaconf import DictConfig
 from sklearn.model_selection import train_test_split
 
 
-@hydra.main(version_base=None, config_path="../conf", config_name="config")
+@hydra.main(version_base=None, config_path="../configs", config_name="config")
 def download_data(cfg: DictConfig) -> None:
     """
     Download and prepare Toxic Russian Comments dataset from Hugging Face.

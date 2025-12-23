@@ -216,3 +216,5 @@ __marimo__/
 .streamlit/secrets.toml
 /data
 /data_remote
+/outputs
+/rubert_tiny2_toxic

@@ -1,0 +1,6 @@
+outs:
+- md5: 529cf7f6191d5b5342a614edd8aa34d1.dir
+  size: 237486255
+  nfiles: 8
+  hash: md5
+  path: rubert_tiny2_toxic
