@@ -51,6 +51,7 @@ uv sync
 ```
 
 ## Train
+
 - Активируйте окружение
 
 - Скачайте данные с HF (использовал DVC, однако remote был локально), запустите MLFlow и начните обучение
@@ -66,10 +67,10 @@ python3 toxicity_comments_russian/train.py
 - Если не было этапа Train, то необходимо загрузить модел с HF.
 
 ```
-python3 toxicity_comments_russian/download_model.py.py
+python3 toxicity_comments_russian/download_model.py
 ```
 
-- Для того, чтобы перевести модель в ONNX формат и зарегестрировать в MLFlow
+- Для того, чтобы перевести модель в ONNX формат (сама модель очень легковесная 29.4M параметров, поэтому в TensorRT переводить не вижу смысла, коль скоро инференс будет на CPU) и зарегестрировать в MLFlow
 
 ```
 python3 toxicity_comments_russian/model_to_onnx.py
