@@ -24,3 +24,8 @@ dev = [
 [tool.ruff]
 line-length = 100
 lint.select = ["E", "F", "W", "I", "B", "SIM", "A", "RET", "PTH"]
+
+[tool.uv.workspace]
+members = [
+    "aboba",
+]

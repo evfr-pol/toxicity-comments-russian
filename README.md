@@ -44,7 +44,7 @@
 
 ## Setup
 
-- Создаййте новое виртуальное окружение при помощи uv и установите зависимости.
+- Создайте новое виртуальное окружение при помощи uv и установите зависимости.
 
 ```
 uv sync
@@ -53,7 +53,7 @@ uv sync
 ## Train
 - Активируйте окружение
 
-- Скачайте данные с HF, запустите MLFlow и начните обучение
+- Скачайте данные с HF (использовал DVC, однако remote был локально), запустите MLFlow и начните обучение
 
 ```
 python3 toxicity_comments_russian/download_data.py
@@ -86,4 +86,4 @@ mlflow models serve -m "models:/toxic_russian_comments_onnx/<version>" -p 5000 -
 
 `<version>` - смотри в выводе команды mlflow_server.py
 
-Для примера смотри examples.py
+Для примера смотри example.py

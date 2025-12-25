@@ -225,3 +225,6 @@ __marimo__/
 /mlruns
 
 *.db
+
+toxicity_comments_russian/triton.py
+/model_repository

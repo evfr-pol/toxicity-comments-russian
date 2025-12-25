@@ -1,5 +1,4 @@
-data_dir: "data"
 max_length: 512
-remote_data_dir: "data"
 random_state: 42
 val_size: 0.1
+dataset_name: "AlexSham/Toxic_Russian_Comments"

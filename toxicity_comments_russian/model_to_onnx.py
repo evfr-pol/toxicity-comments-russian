@@ -8,7 +8,7 @@ from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 @hydra.main(version_base=None, config_path="../configs", config_name="config")
 def to_onnx(cfg: DictConfig):
-    model_save_path = Path(cfg.training.output_dir) / "best_model"
+    model_save_path = Path(__file__).parent.parent / cfg.model.model_name / "best_model"
     model = AutoModelForSequenceClassification.from_pretrained(model_save_path)
     model.eval()
 
@@ -38,6 +38,8 @@ def to_onnx(cfg: DictConfig):
             "attention_mask": {0: "batch", 1: "sequence"},
             "logits": {0: "batch"},
         },
+        external_data=False,
+        opset_version=16
     )
 
 

@@ -13,7 +13,7 @@ class ToxicONNXModel(mlflow.pyfunc.PythonModel):
     def load_context(self, context):
         model_dir = Path(context.artifacts["onnx_model"])
         self.tokenizer = AutoTokenizer.from_pretrained(model_dir)
-        self.onnx_path = model_dir / "model.onnx"
+        self.onnx_path = model_dir / f"model.onnx"
         self.session = ort.InferenceSession(str(self.onnx_path))
 
     def predict(self, context, model_input: pd.DataFrame) -> np.ndarray:
@@ -39,7 +39,7 @@ class ToxicONNXModel(mlflow.pyfunc.PythonModel):
         return probs
 
 def main():
-    model_path = Path(__file__).resolve().parent / "../rubert_tiny2_toxic/best_model"
+    model_path = Path(__file__).resolve().parent.parent / "rubert_tiny2_toxic/best_model"
     with mlflow.start_run() as run:
         mlflow.pyfunc.log_model(
             name="toxic_russian_comments_onnx",

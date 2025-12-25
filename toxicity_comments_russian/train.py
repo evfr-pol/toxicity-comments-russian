@@ -27,13 +27,6 @@ def compute_metrics(pred):
         "roc_auc": roc_auc_score(labels, probs),
     }
 
-
-# def pull_data_dvc():
-#     repo = Repo(str(Path(__file__).parent))
-#     repo.pull(force=True)
-#     repo.close()
-
-
 def get_git_commit_id():
     return subprocess.check_output(["git", "rev-parse", "HEAD"]).decode("ascii").strip()
 
@@ -43,8 +36,7 @@ def train(cfg: DictConfig):
     mlflow.set_tracking_uri(cfg.logging.mlflow_uri)
     mlflow.set_experiment(cfg.logging.experiment_name)
     commit_id = get_git_commit_id()
-
-    # pull_data_dvc()
+    output_dir = Path(__file__).parent.parent / cfg.model.model_name
 
     with mlflow.start_run():
         mlflow.log_params(
@@ -61,7 +53,7 @@ def train(cfg: DictConfig):
         )
         mlflow.log_param("git_commit_id", commit_id)
 
-        data_dir = Path(cfg.data.data_dir)
+        data_dir = Path(__file__).parent.parent / 'data'
         train_dataset = load_from_disk(data_dir / "train_toxic_dataset_clean")
         val_dataset = load_from_disk(data_dir / "val_toxic_dataset_clean")
         tokenizer = AutoTokenizer.from_pretrained(cfg.model.pretrained_model_name)
@@ -80,7 +72,7 @@ def train(cfg: DictConfig):
             cfg.model.pretrained_model_name, num_labels=cfg.model.num_labels
         )
         training_args = TrainingArguments(
-            output_dir=Path(cfg.training.output_dir),
+            output_dir=output_dir,
             per_device_train_batch_size=cfg.training.train_batch_size,
             per_device_eval_batch_size=cfg.training.eval_batch_size,
             num_train_epochs=cfg.training.num_epochs,
@@ -109,7 +101,7 @@ def train(cfg: DictConfig):
 
         trainer.train()
 
-        model_save_path = Path(cfg.training.output_dir) / "best_model"
+        model_save_path = output_dir
         trainer.save_model(model_save_path)
         trainer.tokenizer.save_pretrained(model_save_path)
 
