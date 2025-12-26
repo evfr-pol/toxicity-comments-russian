@@ -5,7 +5,6 @@ import hydra
 import mlflow
 import numpy as np
 from datasets import load_from_disk
-from dvc.repo import Repo
 from omegaconf import DictConfig
 from sklearn.metrics import f1_score, precision_score, recall_score, roc_auc_score
 from transformers import (
@@ -26,6 +25,7 @@ def compute_metrics(pred):
         "recall": recall_score(labels, preds),
         "roc_auc": roc_auc_score(labels, probs),
     }
+
 
 def get_git_commit_id():
     return subprocess.check_output(["git", "rev-parse", "HEAD"]).decode("ascii").strip()
@@ -53,7 +53,7 @@ def train(cfg: DictConfig):
         )
         mlflow.log_param("git_commit_id", commit_id)
 
-        data_dir = Path(__file__).parent.parent / 'data'
+        data_dir = Path(__file__).parent.parent / "data"
         train_dataset = load_from_disk(data_dir / "train_toxic_dataset_clean")
         val_dataset = load_from_disk(data_dir / "val_toxic_dataset_clean")
         tokenizer = AutoTokenizer.from_pretrained(cfg.model.pretrained_model_name)

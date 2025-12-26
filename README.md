@@ -64,9 +64,9 @@ python3 toxicity_comments_russian/train.py
 
 - Итоговые метрики обучения:
 
-| Step | Training Loss | Validation Loss | F1      | Precision | Recall   | Roc Auc  |
-|------|---------------|----------------|---------|-----------|----------|----------|
-| 700  | 0.106000      | 0.114437       | 0.881631| 0.869460  | 0.894147 | 0.985586 |
+| Step | Training Loss | Validation Loss | F1       | Precision | Recall   | Roc Auc  |
+| ---- | ------------- | --------------- | -------- | --------- | -------- | -------- |
+| 700  | 0.106000      | 0.114437        | 0.881631 | 0.869460  | 0.894147 | 0.985586 |
 
 ## Model production packaging
 
@@ -84,6 +84,7 @@ python3 toxicity_comments_russian/mlflow_server.py
 ```
 
 - Для того, чтобы перевести модель в TensorRT формат, необходимо запустить скрипт (хотя модель очень легковесная - 30M параметров, поэтому дешевле инферить на CPU). На вашем сервере должно быть GPU (NVIDIA).
+
 ```
 ./toxicity_comments_russian/to_triton.sh
 ```

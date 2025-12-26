@@ -38,7 +38,7 @@ def to_onnx(cfg: DictConfig):
             "attention_mask": {0: "batch", 1: "sequence"},
             "logits": {0: "batch"},
         },
-        external_data=False
+        external_data=False,
     )
 
 

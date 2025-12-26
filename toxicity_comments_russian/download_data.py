@@ -12,7 +12,7 @@ def download_data(cfg: DictConfig) -> None:
     """
     Download and prepare Toxic Russian Comments dataset from Hugging Face.
     """
-    remote_data_dir = Path(__file__).parent.parent / 'data'
+    remote_data_dir = Path(__file__).parent.parent / "data"
     train_path = remote_data_dir / "train_toxic_dataset_clean"
     val_path = remote_data_dir / "val_toxic_dataset_clean"
     test_path = remote_data_dir / "test_toxic_dataset_clean"
